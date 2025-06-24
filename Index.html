@@ -1,1 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solucionador de Dominio y Rango</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .input-section {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .graph-section {
+            flex: 2;
+            min-width: 500px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #ffcc00;
+            text-align: center;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 14px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        button {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff8c00, #ffcc00);
+            color: #1a1a2e;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(255, 140, 0, 0.4);
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 140, 0, 0.6);
+        }
+        
+        #graph {
+            height: 500px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .results {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .result-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            font-size: 1.2rem;
+        }
+        
+        .result-title {
+            font-weight: bold;
+            color: #ffcc00;
+            margin-bottom: 8px;
+        }
+        
+        .examples {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+        
+        .examples h3 {
+            color: #ffcc00;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .example-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .example-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .example-function {
+            font-weight: bold;
+            color: #ffcc00;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            font-size: 1.1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .graph-section {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Solucionador de Dominio y Rango</h1>
+            <p class="subtitle">Herramienta interactiva para calcular dominio y rango de funciones matemáticas con visualización gráfica. Ingresa una función y explora su comportamiento.</p>
+        </header>
+        
+        <div class="content">
+            <div class="input-section">
+                <h2 class="section-title">Ingresa tu función</h2>
+                <div class="input-group">
+                    <label for="functionType">Tipo de función:</label>
+                    <select id="functionType">
+                        <option value="linear">Lineal (y = mx + b)</option>
+                        <option value="quadratic">Cuadrática (y = ax² + bx + c)</option>
+                        <option value="rational">Racional (y = 1/(x - h))</option>
+                        <option value="sqrt">Raíz cuadrada (y = √(x - h))</option>
+                        <option value="exponential">Exponencial (y = e^x)</option>
+                        <option value="logarithmic">Logarítmica (y = ln(x))</option>
+                        <option value="trigonometric">Trigonométrica (y = sen(x))</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="functionParams">Parámetros de la función:</label>
+                    <input type="text" id="functionParams" placeholder="Ej: a=2, b=-3, c=1">
+                </div>
+                
+                <div class="input-group">
+                    <label for="xMin">Valor mínimo de x:</label>
+                    <input type="number" id="xMin" value="-10">
+                </div>
+                
+                <div class="
 
